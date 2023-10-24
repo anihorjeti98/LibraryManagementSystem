@@ -5,24 +5,24 @@ People can borrow and return items from the library. Each person has a name, add
 Functional Requirements:
 
 1. Item Management:
-○ Add new items (book, CD, DVD) to the library.
-○ Delete items from the library.
-○ Check if an item is available.
-○ Check out an item.
-○ Return an item.
-○ Print details of an item.
+Add new items (book, CD, DVD) to the library.
+Delete items from the library.
+Check if an item is available.
+Check out an item.
+Return an item.
+Print details of an item.
 
-2. Account Management:
+3. Account Management:
 ○ Create a new library account.
 ○ Close a library account.
 ○ Print account details.
 
-3. Search Functionality:
+4. Search Functionality:
 ○ Search for an item by title.
 ○ Search for books by author.
 ○ Search for items by type (book, CD, DVD).
 
-4. Reporting:
+5. Reporting:
 ○ List all items in the library.
 ○ List all accounts.
 ○ List all checked-out items.
