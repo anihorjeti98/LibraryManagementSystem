@@ -13,17 +13,17 @@ Return an item.
 Print details of an item.
 
 3. Account Management:
-○ Create a new library account.
-○ Close a library account.
-○ Print account details.
+Create a new library account.
+Close a library account.
+Print account details.
 
 4. Search Functionality:
-○ Search for an item by title.
-○ Search for books by author.
-○ Search for items by type (book, CD, DVD).
+Search for an item by title.
+Search for books by author.
+Search for items by type (book, CD, DVD).
 
 5. Reporting:
-○ List all items in the library.
-○ List all accounts.
-○ List all checked-out items.
-○ List all available items.
+List all items in the library.
+List all accounts.
+List all checked-out items.
+List all available items.
