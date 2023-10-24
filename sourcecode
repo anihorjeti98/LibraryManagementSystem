@@ -1,1 +1,310 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+class Item {
+public:
+    int itemNumber;
+    std::string title;
+    bool available;
+
+    // Constructor
+    Item(int itemNumber, const std::string& title, bool available)
+        : itemNumber(itemNumber), title(title), available(available) {}
+
+    // Print item details
+    void printDetails() {
+        std::cout << "Item Number: " << itemNumber << std::endl;
+        std::cout << "Title: " << title << std::endl;
+        std::cout << "Available: " << (available ? "Yes" : "No") << std::endl;
+    }
+};
+
+class Book : public Item {
+public:
+    std::string author;
+    std::string ISBN;
+
+    // Constructor
+    Book(int itemNumber, const std::string& title, bool available, const std::string& author, const std::string& ISBN)
+        : Item(itemNumber, title, available), author(author), ISBN(ISBN) {}
+};
+
+class CD : public Item {
+public:
+    int lengthMinutes;
+
+    // Constructor
+    CD(int itemNumber, const std::string& title, bool available, int lengthMinutes)
+        : Item(itemNumber, title, available), lengthMinutes(lengthMinutes) {}
+};
+
+class DVD : public Item {
+public:
+    int lengthMinutes;
+
+    // Constructor
+    DVD(int itemNumber, const std::string& title, bool available, int lengthMinutes)
+        : Item(itemNumber, title, available), lengthMinutes(lengthMinutes) {}
+};
+
+class Person {
+public:
+    int accountNumber;
+    std::string name;
+    std::string address;
+    std::vector<Item*> borrowedItems;
+
+    // Constructor
+    Person(int accountNumber, const std::string& name, const std::string& address)
+        : accountNumber(accountNumber), name(name), address(address) {}
+
+    // Print account details
+    void printAccountDetails() {
+        std::cout << "Account Number: " << accountNumber << std::endl;
+        std::cout << "Name: " << name << std::endl;
+        std::cout << "Address: " << address << std::endl;
+    }
+};
+
+class Library {
+private:
+    std::vector<Item*> items;
+    std::vector<Person> accounts;
+
+public:
+    // Function to add a new item to the library
+    void addItem(Item* item) {
+        items.push_back(item);
+    }
+
+    // Function to remove an item from the library
+    void removeItem(int itemNumber) {
+        for (auto it = items.begin(); it != items.end(); ++it) {
+            if ((*it)->itemNumber == itemNumber) {
+                delete* it;
+                items.erase(it);
+                return;
+            }
+        }
+    }
+
+    // Function to check if an item is available
+    bool isItemAvailable(int itemNumber) {
+        for (const Item* item : items) {
+            if (item->itemNumber == itemNumber && item->available) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Function to check out an item
+    void checkOutItem(int itemNumber, int accountNumber) {
+        for (Item* item : items) {
+            if (item->itemNumber == itemNumber && item->available) {
+                for (Person& person : accounts) {
+                    if (person.accountNumber == accountNumber) {
+                        person.borrowedItems.push_back(item);
+                        item->available = false;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    // Function to return an item
+    void returnItem(int itemNumber, int accountNumber) {
+        for (Person& person : accounts) {
+            if (person.accountNumber == accountNumber) {
+                for (Item* item : person.borrowedItems) {
+                    if (item->itemNumber == itemNumber) {
+                        item->available = true;
+                        person.borrowedItems.erase(std::remove(person.borrowedItems.begin(),
+                            person.borrowedItems.end(), item), person.borrowedItems.end());
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    // Function to list all items in the library
+   /* void listAllItems() {
+        std::cout << "List of all items in the library:" << std::endl;
+        for (const Item* item : items) {
+            item->printDetails();
+            std::cout << "--------------------------" << std::endl;
+        }
+    }*/
+
+    // Function to create a new library account
+    void createAccount(int accountNumber, const std::string& name, const std::string& address) {
+        accounts.push_back(Person(accountNumber, name, address));
+    }
+
+    // Function to close a library account
+    void closeAccount(int accountNumber) {
+        for (auto it = accounts.begin(); it != accounts.end(); ++it) {
+            if (it->accountNumber == accountNumber) {
+                accounts.erase(it);
+                return;
+            }
+        }
+    }
+
+    // Function to list all accounts
+ /*   void listAllAccounts() {
+        std::cout << "List of all library accounts:" << std::endl;
+        for (const Person& person : accounts) {
+            person.printAccountDetails();
+            std::cout << "--------------------------" << std::endl;
+        }
+    }*/
+};
+
+int main() {
+    Library library;
+
+    while (true) {
+        int choice;
+        std::cout << "Library Management System Menu" << std::endl;
+        std::cout << "1. Add new item" << std::endl;
+        std::cout << "2. Delete item" << std::endl;
+        std::cout << "3. Check out an item" << std::endl;
+        std::cout << "4. Return an item" << std::endl;
+        std::cout << "5. List all items" << std::endl;
+        std::cout << "6. Create a new library account" << std::endl;
+        std::cout << "7. Close a library account" << std::endl;
+        std::cout << "8. List all accounts" << std::endl;
+        std::cout << "9. Quit" << std::endl;
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+
+        if (choice == 1) {
+            // Add a new item
+            int itemChoice;
+            std::cout << "Select item type:" << std::endl;
+            std::cout << "1. Book" << std::endl;
+            std::cout << "2. CD" << std::endl;
+            std::cout << "3. DVD" << std::endl;
+            std::cout << "Enter your choice: ";
+            std::cin >> itemChoice;
+
+            int itemNumber;
+            std::string title;
+            bool available;
+
+            std::cout << "Enter Item Number: ";
+            std::cin >> itemNumber;
+
+            std::cout << "Enter Title: ";
+            std::cin.ignore();
+            std::getline(std::cin, title);
+
+            std::cout << "Is it available? (1 for Yes, 0 for No): ";
+            std::cin >> available;
+
+            if (itemChoice == 1) {
+                std::string author, ISBN;
+                std::cout << "Enter Author: ";
+                std::cin.ignore();
+                std::getline(std::cin, author);
+                std::cout << "Enter ISBN: ";
+                std::cin >> ISBN;
+                library.addItem(new Book(itemNumber, title, available, author, ISBN));
+                std::cout << "Book added successfully!" << std::endl;
+            }
+            else if (itemChoice == 2) {
+                int lengthMinutes;
+                std::cout << "Enter Length (in minutes): ";
+                std::cin >> lengthMinutes;
+                library.addItem(new CD(itemNumber, title, available, lengthMinutes));
+                std::cout << "CD added successfully!" << std::endl;
+            }
+            else if (itemChoice == 3) {
+                int lengthMinutes;
+                std::cout << "Enter Length (in minutes): ";
+                std::cin >> lengthMinutes;
+                library.addItem(new DVD(itemNumber, title, available, lengthMinutes));
+                std::cout << "DVD added successfully!" << std::endl;
+            }
+            else {
+                std::cout << "Invalid item type. Item not added." << std::endl;
+            }
+        }
+        else if (choice == 2) {
+            // Delete an item
+            int itemNumber;
+            std::cout << "Enter Item Number to delete: ";
+            std::cin >> itemNumber;
+            if (library.isItemAvailable(itemNumber)) {
+                std::cout << "Cannot delete an available item. Please return it first." << std::endl;
+            }
+            else {
+                library.removeItem(itemNumber);
+                std::cout << "Item deleted successfully!" << std::endl;
+            }
+        }
+        else if (choice == 3) {
+            // Check out an item
+            int itemNumber, accountNumber;
+            std::cout << "Enter Item Number to check out: ";
+            std::cin >> itemNumber;
+            std::cout << "Enter Account Number: ";
+            std::cin >> accountNumber;
+            library.checkOutItem(itemNumber, accountNumber);
+        }
+        else if (choice == 4) {
+            // Return an item
+            int itemNumber, accountNumber;
+            std::cout << "Enter Item Number to return: ";
+            std::cin >> itemNumber;
+            std::cout << "Enter Account Number: ";
+            std::cin >> accountNumber;
+            library.returnItem(itemNumber, accountNumber);
+        }
+        else if (choice == 5) {
+            // List all items
+           /* library.listAllItems();*/
+        }
+        else if (choice == 6) {
+            // Create a new library account
+            int accountNumber;
+            std::string name, address;
+            std::cout << "Enter Account Number: ";
+            std::cin >> accountNumber;
+            std::cout << "Enter Name: ";
+            std::cin.ignore();
+            std::getline(std::cin, name);
+            std::cout << "Enter Address: ";
+            std::cin.ignore();
+            std::getline(std::cin, address);
+            library.createAccount(accountNumber, name, address);
+            std::cout << "Account created successfully!" << std::endl;
+        }
+        else if (choice == 7) {
+            // Close a library account
+            int accountNumber;
+            std::cout << "Enter Account Number to close: ";
+            std::cin >> accountNumber;
+            library.closeAccount(accountNumber);
+            std::cout << "Account closed successfully!" << std::endl;
+        }
+        else if (choice == 8) {
+            // List all accounts
+            /*library.listAllAccounts();*/
+        }
+        else if (choice == 9) {
+            // Quit the program
+            break;
+        }
+        else {
+            std::cout << "Invalid choice. Please try again." << std::endl;
+        }
+    }
+
+    return 0;
+}
 
